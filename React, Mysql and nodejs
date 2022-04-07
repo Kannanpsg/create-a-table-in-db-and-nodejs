@@ -1,0 +1,127 @@
+
+Refrences
+
+CREATE TABLE Colleges (
+   Id INT NOT NULL AUTO_INCREMENT,
+   PRIMARY KEY (Id),
+   college_name VARCHAR(100)
+)
+
+CREATE TABLE Departments (
+   Id INT NOT NULL AUTO_INCREMENT,
+   PRIMARY KEY (Id),
+   college_id INT(10),
+   FOREIGN KEY (college_id) REFERENCES Colleges (Id),
+   department_name VARCHAR(200)
+)
+
+CREATE TABLE Students(
+   Id INT NOT NULL AUTO_INCREMENT,
+   PRIMARY KEY (Id),
+   Student_name VARCHAR(200),
+   college_id INT(10),
+   FOREIGN KEY (college_id) REFERENCES Departments (Id),
+   department_id INT(10),
+   FOREIGN KEY (department_id) REFERENCES Departments (Id)
+)
+
+
+
+backend 
+
+const express = require('express')
+const cors = require('cors');
+const mysql = require('mysql');  
+var app = express();
+app.use(express.json()); 
+const corsOptions ={
+  origin:'http://localhost:3000', 
+  credentials:true,            //access-control-allow-credentials:true
+  optionSuccessStatus:200
+}
+
+app.use(cors(corsOptions));
+
+const con = mysql.createConnection({   
+  host: "*******",   
+  user: "*******",   
+  password: "********",
+  database: '*******',
+  multipleStatements: true // this allow you to run multiple queries at once.
+});   
+con.connect(function(err) {   
+  if (err) throw err;   
+  console.log("Connected!");   
+});   
+
+app.get('/', function(req, resp){
+    
+  con.query('CREATE TABLE Colleges (Id INT NOT NULL AUTO_INCREMENT,PRIMARY KEY (Id),college_name VARCHAR(100))'), function(error, rows, fields){
+    if(!!error)
+    {
+    console.log('Error in the query');
+    }
+    else{
+    console.log('Successful query');
+    }
+    };
+  
+  con.query('CREATE TABLE Departments (Id INT NOT NULL AUTO_INCREMENT,PRIMARY KEY (Id),college_id INT(10),FOREIGN KEY (college_id) REFERENCES Colleges (Id),department_name VARCHAR(200))'), function(error, rows, fields){ 
+    if(!!error)
+     {
+      console.log('Error in the query');
+     }
+    else{
+      console.log('Successful query');
+     }
+    };    
+
+  con.query('CREATE TABLE Students (Id INT NOT NULL AUTO_INCREMENT,PRIMARY KEY (Id),Student_name VARCHAR(200),college_id INT(10),FOREIGN KEY (college_id) REFERENCES Departments (college_id),department_id INT(10),FOREIGN KEY (department_id) REFERENCES Departments (Id))'), function(error, rows, fields){ 
+      if(!!error)
+       {
+        console.log('Error in the query');
+       }
+      else{
+        console.log('Successful query');
+       }
+       };
+})
+
+
+// app.post("/register", function(req, res, next) {
+
+ 
+//   console.log('req.body');
+//   console.log(req.body);
+//   res.write('You sent the username "' + req.body.username+'".\n');
+//   res.write('You sent the Email "' + req.body.email+'".\n');
+//   res.write('You sent the password "' + req.body.password+'".\n');
+//   res.end()
+  
+//   con.query("Insert into mySampleTable (username,email,password) VALUES ('"+req.body.username+"','"+req.body.email+"','"+req.body.password+"')",function(err, result)      
+//   {                                                      
+//     if (err)
+//        throw err;
+//   });
+//   });
+
+//   app.get('/', function(req, resp){
+//     con.query("SELECT * FROM mySampleTable", function(error,rows,fields){
+//     if(!!error){
+//         console.log('Error in the query');
+//     } else {
+//         console.log(rows[0].username);
+//         resp.send('Hello' + rows[1].username);
+//     }
+//     });
+//     })
+    
+    app.listen(1337);
+
+
+
+
+
+
+
+
